@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./style/images/rick.png" type="image/png">
+  <link rel="stylesheet" href="./style/style.css">
+
+
+  <title>Rick and Morty</title>
+
+</head>
+<body>
+  <h1>Rick and Morty</h1>
+  <ul id="characters"></ul>
+  <div id="characterView">
+    <span id="close">x</span>
+    <ul>
+      <li id="name"></li>
+      <li id="status"></li>
+      <li id="origin"></li>
+    </ul>
+  </div>
+  <script>
+    fetch('https://rickandmortyapi.com/api/character')
+      .then(response => response.json())
+      .then(data => {
+        const characters = data.results ;
+
+        const charactersElement = document.getElementById('characters');
+
+        characters.forEach(character => {
+          const charElement = document.createElement('li');
+          charElement.innerHTML = `
+            <img src="${character.image}" alt="${character.name}" />
+            <p>${character.name}</p>
+          `;
+          charactersElement.appendChild(charElement);
+
+          charElement.addEventListener('click', () => {
+            view(character.id)
+          })
+        })
+      })
+
+      const characterViewElement = document.getElementById('characterView')
+
+      const view = (id) => {
+        fetch(`https://rickandmortyapi.com/api/character/${id}`)
+          .then(response => response.json())
+          .then(character => {
+            const nameElement = document.getElementById('name')
+            const statusElement = document.getElementById('status')
+            const originElement = document.getElementById('origin')
+
+            nameElement.innerText = character.name;
+            statusElement.innerText = character.status;
+            originElement.innerText = character.origin.name;
+
+            characterViewElement.style.display = 'block';
+          })
+      }
+
+      const closeElement = document.getElementById('close')
+      closeElement.addEventListener('click', () => {
+        characterViewElement.style.display = 'none';
+      })
+  </script>
+</body>
+</html>
